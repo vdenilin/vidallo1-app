@@ -1,1 +1,5 @@
-Welcome to vidallo-app
+<x-layout>
+    <x-slot:heading>
+        <h1>Welcome to {{ $name }}</h1>
+        </x-slot>
+</x-layout>

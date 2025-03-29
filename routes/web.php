@@ -1,39 +1,51 @@
 <?php
 
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
-use App\Services\ProductService;
-use App\Services\UserService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Services\UserService;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\ProductController;
+use App\Services\ProductService;
 
 
-// Test Container
+
+Route::get('/', function () {
+    return view('welcome', ['name' => 'vidallo1-app']);
+});
+
+Route::get('/users', [UserController::class, 'index']);
+
+Route::resource('products', ProductController::class);
+
+
+// service container
 Route::get('/test-container', function (Request $request) {
     $input = $request->input('key');
     return $input;
 });
-
-// Test Service Provider
+//service provider
 Route::get('/test-provider', function (UserService $userService) {
-    dd($userService->listUser());
+    return $userService->listuser();
+    //dd($userService->listusers());
+
 });
+//service provider
+Route::get('/test-users', [UserController::class, 'index']);
 
-// Test User Controller
-Route::get('/test-user', [UserController::class, 'index']);
-
-// Test Facade
+//facades
 Route::get('/test-facade', function (UserService $userService) {
-    return Response::json($userService->listUser()); // ✅ Fixed Response usage
+    return Response::json($userService->listuser());
+    //dd(Response::json($userService->listusers()));
 });
 
-// Route with Parameters
-Route::get('/post/{post}/comment/{comment}', function (string $post, string $comment) { // ✅ Fixed postId to post
-    return "Post ID: " . $post . " - Comment: " . $comment;
+
+
+// routing -> parameters
+Route::get('/post/{post}/comment/{comment}', function (string $postId, string $comment) {
+    return "Post ID: " . $postId . "- Comment: " . $comment;
 });
 
-// Route with Regex Constraint
 Route::get('/post/{id}', function (string $id) {
     return $id;
 })->where('id', '[0-9]+');
@@ -42,31 +54,34 @@ Route::get('/search/{search}', function (string $search) {
     return $search;
 })->where('search', '.*');
 
-// Named Route (Alias)
+//named route or route alias
 Route::get('/test/route', function () {
     return route('test-route');
 })->name('test-route');
 
-// Middleware Group
-Route::middleware(['user-middleware'])->group(function () {
-    Route::get('route-middleware-group/first', function () {
-        echo 'first';
-    });
 
-    Route::get('route-middleware-group/second', function () {
-        echo 'second';
-    });
-});
+// //middleware
+// Route::middleware(['user-middleware'])->group(function (){
+//     Route::get('route-middleware-group/first', function(Request $request){
+//         echo 'first';
+//     });
 
-// Controller Group Routes
+//     Route::get('route-middleware-group/second', function(Request $request){
+//         echo 'second';
+//     });
+// });
+
+
+//route -> controller
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
     Route::get('/users/first', 'first');
     Route::get('/users/{id}', 'show');
 });
 
-// Token View & Form Submission
-Route::get('/token', function () {
+//csrf
+Route::get('/token', function (Request $request) {
+    $token = $request->session()->token();
     return view('token');
 });
 
@@ -74,14 +89,16 @@ Route::post('/token', function (Request $request) {
     return $request->all();
 });
 
-// Middleware in Controller
-Route::get('/user', [UserController::class, 'index'])->middleware('user-middleware');
+/*
+//controller -> middleware
+Route::get('/users', [UserController::class, 'index'])->middleware('user-middleware');
 
-///Resource
+//resource
 Route::resource('products', ProductController::class);
+*/
 
-//View with data
+//view with data
 Route::get('/product-list', function (ProductService $productService) {
-    $data['products'] = $productService->listProducts();
-    return view('product.list', $data);
+    $data['products'] = $productService->listproducts();
+    return view('products.list', $data);
 });

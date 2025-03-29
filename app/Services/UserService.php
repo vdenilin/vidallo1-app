@@ -1,15 +1,18 @@
 <?php
 namespace App\Services;
 
-class UserService {
+class UserService
+{
     protected $user;
 
-    public function __construct($user){
-        $this->user=$user;
- }
+    public function __construct($user)
+    {
+        $this->user = $user;
+    }
 
 
-    public function listUser(){
+    public function listUser()
+    {
         return $this->user;
     }
 }

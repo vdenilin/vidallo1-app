@@ -12,23 +12,21 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(UserService::class, function ($app){
+        $this->app->singleton(UserService::class, function ($app) {
             $users = [
                 [
                     'id' => 1,
-                    'name' => 'Jan Dave Vidallo',
-                    'gender' => 'Male'
+                    'name' => 'Den',
+                    'gender' => 'male'
                 ],
-
                 [
                     'id' => 2,
-                    'name' => 'Denilin Vidallo',
-                    'gender' => 'Female'
+                    'name' => 'Lin',
+                    'gender' => 'female'
                 ]
+            ];
 
-                ];
-
-                return new UserService($users);
+            return new UserService($users);
         });
     }
 
